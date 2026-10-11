@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thi trắc nghiệm online</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#2563eb;--indigo:#6366f1;--bg:#f2f2f7;--ink:#1f2937;--red:#d32f2f}
+body{font-family:Poppins,system-ui,sans-serif;background:#d9dbe3;color:var(--ink)}
+#app{max-width:480px;min-height:100vh;margin:0 auto;background:var(--bg);position:relative}
+.topbar{background:#fff;box-shadow:0 2px 6px #0001;position:sticky;top:0;z-index:20}
+.avatar{width:44px;height:44px;border-radius:50%;background:#ec407a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:500;border:2px solid #fff;box-shadow:0 0 0 1px #e5e7eb}
+.avatar.lg{width:96px;height:96px;font-size:3rem}
+.avatar.sm{width:28px;height:28px;font-size:.7rem;background:#9ca3af}
+.card-x{background:#fff;border-radius:16px;box-shadow:0 1px 4px #0002;border:0}
+.banner{background:linear-gradient(90deg,#2563eb,#6366f1);color:#fff;border-radius:18px;box-shadow:0 6px 14px #4f46e540;cursor:pointer}
+.ico{width:36px;height:36px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;flex:none}
+.score-box{background:#fdeeee;color:var(--red);width:64px;height:64px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:500;flex:none}
+.pill{border:1px solid #d1d5db;border-radius:10px;padding:2px 12px;font-size:.9rem;color:#3b4ca0}
+.tag{background:#e0e9fb;color:#1e3a8a;border-radius:10px;padding:2px 14px;font-size:.9rem}
+.rank{background:linear-gradient(90deg,#7c3aed,#3b82f6);color:#fff;border-radius:16px}
+.btn-yellow{background:#fbc02d;color:#6b4a00;font-weight:500;border-radius:10px;border:0;box-shadow:0 3px 8px #fbc02d66}
+.fab{position:fixed;bottom:24px;right:max(20px,calc(50% - 220px));z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+.fab .main{width:56px;height:56px;border-radius:50%;background:#1e3a9f;color:#fff;border:3px solid #fff;font-size:1.6rem;box-shadow:0 4px 10px #0004}
+.fab .item{display:none;align-items:center;gap:12px;cursor:pointer}
+.fab.open .item{display:flex}
+.fab .lbl{background:#111827;color:#fff;border-radius:10px;padding:8px 16px}
+.fab .dot{width:52px;height:52px;border-radius:50%;color:#fff;font-size:1.4rem;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
+.veil{display:none;position:fixed;inset:0;background:#e5e5e5cc;backdrop-filter:blur(6px);z-index:50}
+.veil.show{display:block}
+.opt{border:1.5px solid #e5e7eb;border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff;display:flex;gap:12px;align-items:center}
+.opt.sel{border-color:var(--blue);background:#eff5ff}
+.opt.ok{border-color:#16a34a;background:#e8f8ee}
+.opt.bad{border-color:var(--red);background:#fdeeee}
+.nav-q{width:38px;height:38px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-size:.9rem}
+.nav-q.done{background:#dbeafe;border-color:var(--blue)}
+.nav-q.cur{outline:2px solid var(--blue)}
+.filter{background:#e7e8ed;border-radius:14px;padding:10px 18px;cursor:pointer}
+.menu-row{padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;border-bottom:1px solid #f0f0f0}
+.menu-row:last-child{border:0}
+.menu-row .ico{width:44px;height:44px}
+.toastx{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:2000;background:#111827;color:#fff;padding:10px 20px;border-radius:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="veil" id="veil" onclick="fab(false)"></div>
+
+<div class="modal fade" id="m" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content" style="border-radius:18px">
+<div class="modal-header border-0 pb-0"><h5 class="modal-title" id="mt"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+<div class="modal-body" id="mb"></div></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ---------- Data ----------
+const HAND=[["Thủ đô của Việt Nam là thành phố nào?",["Huế","Hà Nội","Đà Nẵng","Cần Thơ"],1],
+["Sông nào dài nhất Việt Nam?",["Sông Hồng","Sông Đà","Sông Mê Công","Sông Cả"],2],
+["Đỉnh núi cao nhất Việt Nam là?",["Phan Xi Păng","Bạch Mã","Langbiang","Ngọc Linh"],0],
+["HTML là viết tắt của?",["HyperText Markup Language","High Tech Modern Language","Home Tool Markup Language","Hyper Transfer Mode Link"],0],
+["Nước sôi ở bao nhiêu độ C (áp suất chuẩn)?",["90","100","110","120"],1],
+["Hành tinh gần Mặt Trời nhất là?",["Sao Kim","Trái Đất","Sao Thủy","Sao Hỏa"],2],
+["Căn bậc hai của 144 là?",["10","11","12","14"],2],
+["Ngôn ngữ nào chạy trực tiếp trên trình duyệt?",["Python","JavaScript","C++","Java"],1],
+["1 byte bằng bao nhiêu bit?",["4","8","16","32"],1],
+["Thành phố Đà Lạt thuộc tỉnh nào?",["Lâm Đồng","Khánh Hòa","Đắk Lắk","Gia Lai"],0]];
+function bank(n){const q=HAND.slice(0,Math.min(n,10));
+ for(let i=0;q.length<n;i++){const a=12+i*7,b=5+i*3,c=a+b,o=[c-1,c+10,c+2,c-10];o.splice(i%4,0,c);q.push([`${a} + ${b} = ?`,o.map(String),i%4])}
+ return q}
+const EXAMS=[
+ {id:'TN012',name:'TN012.pdf',teacher:'Phạm Bích Như',min:40,at:'25/03/2026 07:00',n:20,cls:'NHÓM D1 HK1 K50',plays:196},
+ {id:'D42HP4',name:'D42HP4.docx',teacher:'',min:100,at:'Không thời hạn',n:20,cls:'NHÓM D1 HK1 K50',plays:43586},
+ {id:'KT15',name:'KT15P_Tin_hoc.pdf',teacher:'Phạm Bích Như',min:1,at:'Hạn nộp: 30/12/2026 23:59',n:10,cls:'NHÓM D1 HK1 K50',plays:12}];
+const SEED=[];
+
+// ---------- State ----------
+let S={user:null,att:SEED,cls:'all',added:[]},T=null,tick=null,view='home';
+try{const j=JSON.parse(localStorage.getItem('azt2')||'null');if(j)S=Object.assign(S,j)}catch(e){}
+const save=()=>{try{localStorage.setItem('azt2',JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s),ex=id=>EXAMS.find(e=>e.id===id);
+const now=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`};
+const dur=s=>s<60?s+' giây':Math.round(s/60)+' phút';
+const initial=()=>(S.user.name[0]||'H').toUpperCase();
+const doneIds=()=>[...new Set(S.att.map(a=>a.ex))];
+const best=id=>Math.max(...S.att.filter(a=>a.ex===id).map(a=>a.score));
+const last=id=>S.att.filter(a=>a.ex===id)[0];
+function toast(t){const d=document.createElement('div');d.className='toastx';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function modal(t,b){$('#mt').textContent=t;$('#mb').innerHTML=b;bootstrap.Modal.getOrCreateInstance('#m').show()}
+function hide(){bootstrap.Modal.getOrCreateInstance('#m').hide()}
+function go(v,p){clearInterval(tick);view=v;S.p=p;fab(false);render();scrollTo(0,0)}
+function head(title,back='home'){return `<div class="topbar d-flex align-items-center px-3 py-3"><button class="btn p-0 border-0" onclick="${back==='exit'?'leave()':`go('${back}')`}"><i class="bi bi-arrow-left fs-4"></i></button><div class="flex-grow-1 text-center fw-medium pe-4">${title}</div></div>`}
+
+// ---------- Views ----------
+function render(){const a=$('#app');
+ if(!S.user)return a.innerHTML=login();
+ if(S.user.role==='gv'&&view==='home')return a.innerHTML=teacher();
+ a.innerHTML=({home,account,notif,exam,take,result,detail}[view]||home)();
+ $('#fabwrap')&&0}
+
+function login(){return `<div class="p-4 d-flex flex-column justify-content-center" style="min-height:100vh">
+<div class="text-center mb-4"><div class="ico mx-auto mb-2" style="width:64px;height:64px;background:linear-gradient(135deg,#2563eb,#6366f1);color:#fff;font-size:2rem"><i class="bi bi-patch-check"></i></div><h4 class="fw-semibold mb-0">Thi trắc nghiệm online</h4><div class="text-secondary">Đăng nhập để vào lớp và làm bài</div></div>
+<div class="card-x p-4"><div class="btn-group w-100 mb-3"><input type="radio" class="btn-check" name="role" id="r1" value="hs" checked><label class="btn btn-outline-primary" for="r1">Học sinh</label><input type="radio" class="btn-check" name="role" id="r2" value="gv"><label class="btn btn-outline-primary" for="r2">Giảng viên</label></div>
+<div class="btn-group w-100 mb-3"><input type="radio" class="btn-check" name="by" id="b1" value="name" checked onchange="lg()"><label class="btn btn-outline-secondary" for="b1">Họ tên</label><input type="radio" class="btn-check" name="by" id="b2" value="id" onchange="lg()"><label class="btn btn-outline-secondary" for="b2">Mã số sinh viên</label></div>
+<label class="form-label small text-secondary" id="ul">Họ và tên</label><input id="u" class="form-control form-control-lg mb-3" placeholder="Nguyễn Văn A" autocomplete="off">
+<label class="form-label small text-secondary">Mật khẩu</label><input id="pw" type="password" class="form-control form-control-lg mb-4" placeholder="Nhập mật khẩu">
+<button class="btn btn-primary btn-lg w-100" onclick="doLogin()">Đăng nhập</button><div class="text-center small text-secondary mt-3">Bản demo: nhập bất kỳ mật khẩu nào</div></div></div>`}
+function lg(){const id=document.querySelector('[name=by]:checked').value==='id';$('#ul').textContent=id?'Mã số sinh viên':'Họ và tên';$('#u').placeholder=id?'Ví dụ: B2407607':'Nguyễn Văn A';$('#u').value=''}
+function doLogin(){const by=document.querySelector('[name=by]:checked').value,u=$('#u').value.trim().replace(/\s+/g,' '),p=$('#pw').value;
+ if(!u)return toast(by==='id'?'Nhập mã số sinh viên':'Nhập họ và tên');
+ if(by==='id'&&!/^[A-Za-z]?\d{6,10}$/.test(u))return toast('Mã số không hợp lệ, ví dụ B2407607');
+ if(by==='name'&&!/^[\p{L} ]{2,}$/u.test(u))return toast('Họ tên chỉ gồm chữ cái và khoảng trắng');
+ if(!p)return toast('Nhập mật khẩu');
+ S.user={name:by==='id'?u.toUpperCase():u,by,role:document.querySelector('[name=role]:checked').value};view='home';save();render()}
+function teacher(){return `<div class="p-4 text-center" style="padding-top:30vh!important"><i class="bi bi-person-workspace display-4 text-primary"></i><h5 class="mt-3">Xin chào, ${S.user.name}</h5><p class="text-secondary">Giao diện giảng viên (tạo đề, quản lý lớp) chưa có trong bản này. Bản này chỉ gồm giao diện học sinh.</p><button class="btn btn-outline-dark" onclick="logout()">Đăng xuất</button></div>`}
+function logout(){S.user=null;view='home';save();render()}
+
+function home(){
+ const open=EXAMS.filter(e=>S.added.includes(e.id)&&!doneIds().includes(e.id)),done=EXAMS.filter(e=>doneIds().includes(e.id));
+ const f=S.cls==='all'?x=>true:x=>x.cls===S.cls;
+ return `<div class="topbar d-flex align-items-center px-3 py-2"><span class="avatar me-2" onclick="go('account')" style="cursor:pointer">${initial()}</span><span class="fw-medium flex-grow-1 text-truncate" onclick="go('account')" style="cursor:pointer">${S.user.name}</span><button class="btn border-0" onclick="go('notif')"><i class="bi bi-bell fs-4"></i></button></div>
+<div class="p-3 pb-5">
+<div class="d-flex justify-content-end mb-3"><div class="filter" onclick="classPick()"><i class="bi bi-filter-left me-2"></i>${S.cls==='all'?'Tất cả các lớp':S.cls} <i class="bi bi-chevron-down ms-2 small"></i></div></div>
+<div class="banner d-flex align-items-center gap-3 p-3 mb-4" onclick="toast('Tính năng tự học sẽ sớm có')"><div class="ico" style="width:64px;height:64px;background:#ffffff30;font-size:1.8rem"><i class="bi bi-stars"></i></div><div class="flex-grow-1"><div class="fs-5 fw-semibold">Tự học thôi!</div><div style="opacity:.9">Tạo khóa ôn tập riêng cho bạn trong 30 giây</div></div><i class="bi bi-chevron-right"></i></div>
+${!open.filter(f).length&&!done.filter(f).length?`<div class="text-center text-secondary py-5"><i class="bi bi-inbox display-5"></i><p class="mt-3">Chưa có bài thi nào.<br>Bấm nút <b>+</b> để tìm đề thi, quét QR hoặc xin vào lớp.</p></div>`:''}
+${open.filter(f).length?`<h5 class="fw-semibold mb-3">Chờ làm (${open.filter(f).length})</h5>${open.filter(f).map(card).join('')}`:''}
+${done.filter(f).length?`<h5 class="fw-semibold mb-3">Đã hoàn thành(${done.filter(f).length})</h5>${done.filter(f).map(card).join('')}`:''}
+</div>${fabHtml()}`}
+function card(e){const d=doneIds().includes(e.id),l=last(e.id);
+ return `<div class="card-x p-3 mb-3" style="cursor:pointer" onclick="go('exam','${e.id}')">
+<div class="d-flex gap-2 mb-2"><span class="pill"><i class="bi bi-flag me-2"></i>${e.at}</span><span class="tag">Đề thi</span></div>
+${e.teacher?`<div class="d-flex align-items-center gap-2 mb-3"><span class="avatar sm">${e.teacher.split(' ').map(w=>w[0]).slice(0,1).join('')+e.teacher.split(' ').pop()[0]}</span>${e.teacher}</div>`:''}
+<div class="d-flex gap-3 align-items-center">${d?`<div class="score-box">${best(e.id)}</div>`:`<div class="score-box" style="background:#e0e9fb;color:var(--blue)"><i class="bi bi-pencil"></i></div>`}
+<div><div class="fs-5 fw-medium">${e.name}</div><div class="text-secondary small">${e.min} Phút &nbsp;<i class="bi bi-question-circle"></i> ${e.n} câu &nbsp;<i class="bi bi-people"></i> ${e.plays} lượt làm đề</div></div></div>
+${d?`<div class="text-end fst-italic text-secondary small mt-2">Đã thi: ${l.date}</div>`:''}</div>`}
+
+function fabHtml(){return `<div class="fab" id="fab">
+<div class="item" onclick="searchM()"><span class="lbl">Tìm kiếm</span><span class="dot" style="background:#2979ff"><i class="bi bi-search"></i></span></div>
+<div class="item" onclick="qrM()"><span class="lbl">Quét QR</span><span class="dot" style="background:#10b981"><i class="bi bi-qr-code-scan"></i></span></div>
+<div class="item" onclick="joinM()"><span class="lbl">Xin vào lớp</span><span class="dot" style="background:#f97316"><i class="bi bi-door-open"></i></span></div>
+<button class="main" id="fabbtn" onclick="fab()"><i class="bi bi-plus-lg"></i></button></div>`}
+function fab(s){const f=$('#fab');if(!f)return $('#veil').classList.remove('show');
+ const o=s===undefined?!f.classList.contains('open'):s;f.classList.toggle('open',o);$('#veil').classList.toggle('show',o);
+ $('#fabbtn').innerHTML=`<i class="bi bi-${o?'x-lg':'plus-lg'}"></i>`}
+
+function classPick(){modal('Chọn lớp',`<input class="form-control bg-light border-0 mb-3 py-2" placeholder="Tìm lớp..." oninput="filt(this.value)">
+<div id="cl">${clist('')}</div>`)}
+function clist(q){return ['Tất cả các lớp','NHÓM D1 HK1 K50'].filter(c=>c.toLowerCase().includes(q.toLowerCase())).map(c=>{const v=c==='Tất cả các lớp'?'all':c,on=S.cls===v;
+ return `<div class="p-3 rounded-3 mb-1 ${on?'fw-semibold text-primary':''}" style="${on?'background:#eaf1ff':''};cursor:pointer" onclick="S.cls='${v}';hide();render()"><i class="bi bi-${on?'check-circle':'book'} me-3"></i>${c}</div>`}).join('')}
+function filt(v){$('#cl').innerHTML=clist(v)}
+function searchM(){fab(false);modal('Tìm kiếm đề thi',`<input class="form-control form-control-lg mb-3" placeholder="Nhập tên đề thi..." oninput="sres(this.value)" autofocus><div id="sr">${sres('',1)}</div>`)}
+function sres(q,r){const h=EXAMS.filter(e=>e.name.toLowerCase().includes(q.toLowerCase())).map(e=>`<div class="p-3 border rounded-3 mb-2" style="cursor:pointer" onclick="hide();go('exam','${e.id}')"><div class="fw-medium">${e.name}</div><div class="small text-secondary">${e.min} phút • ${e.n} câu</div></div>`).join('')||'<div class="text-secondary text-center">Không tìm thấy đề thi phù hợp.</div>';
+ if(r)return h;$('#sr').innerHTML=h}
+function qrM(){fab(false);modal('Quét QR',`<div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:220px;height:220px;border:3px dashed #10b981;border-radius:20px"><i class="bi bi-qr-code display-1 text-secondary"></i></div><p class="text-center text-secondary small">Đưa mã QR của đề thi vào khung. Bản web không có camera, bấm nút dưới để mô phỏng.</p><button class="btn btn-success w-100" onclick="hide();go('exam','KT15')">Mô phỏng quét thành công</button>`)}
+function joinM(){fab(false);modal('Xin vào lớp',`<label class="form-label small text-secondary">Mã lớp</label><input id="cc" class="form-control form-control-lg mb-3" placeholder="Ví dụ: D1K50"><button class="btn btn-warning w-100 text-white" onclick="$('#cc').value.trim()?(hide(),toast('Đã gửi yêu cầu vào lớp, chờ giảng viên duyệt')):toast('Nhập mã lớp')">Gửi yêu cầu</button>`)}
+
+function account(){return `${head('Tài khoản')}<div class="text-center py-4"><div class="position-relative d-inline-block"><span class="avatar lg">${initial()}</span><span class="position-absolute bottom-0 end-0 bg-white rounded-circle p-2 shadow-sm" style="cursor:pointer" onclick="toast('Đổi ảnh đại diện')"><i class="bi bi-pencil-square"></i></span></div><h5 class="fw-semibold mt-3">${S.user.name}</h5></div>
+<div class="card-x mx-3 mb-4">
+<div class="menu-row" onclick="modal('Thông tin tài khoản','<p class=\\'mb-1\\'><b>Họ tên:</b> ${S.user.name}</p><p class=\\'mb-1\\'><b>Vai trò:</b> Học sinh</p><p><b>Lớp:</b> NHÓM D1 HK1 K50</p>')"><span class="ico" style="background:#dbeafe;color:#2563eb"><i class="bi bi-person"></i></span><span class="flex-grow-1">Thông tin tài khoản</span><i class="bi bi-chevron-right text-secondary"></i></div>
+<div class="menu-row"><span class="ico" style="background:#ede9fe;color:#7c3aed"><i class="bi bi-person-bounding-box"></i></span><span class="flex-grow-1">Đăng nhập khuôn mặt</span><div class="form-check form-switch fs-4 m-0"><input class="form-check-input" type="checkbox"></div></div>
+<div class="menu-row" onclick="modal('Đổi mật khẩu','<input type=password class=\\'form-control mb-2\\' placeholder=\\'Mật khẩu cũ\\'><input type=password class=\\'form-control mb-3\\' placeholder=\\'Mật khẩu mới\\'><button class=\\'btn btn-primary w-100\\' onclick=\\'hide();toast(&quot;Đã đổi mật khẩu&quot;)\\'>Lưu mật khẩu</button>')"><span class="ico" style="background:#fef3c7;color:#f59e0b"><i class="bi bi-lock"></i></span><span class="flex-grow-1">Đổi mật khẩu</span><i class="bi bi-chevron-right text-secondary"></i></div>
+<div class="menu-row" onclick="qrM()"><span class="ico" style="background:#ccfbf1;color:#14b8a6"><i class="bi bi-qr-code"></i></span><span class="flex-grow-1">QR đăng nhập</span><i class="bi bi-chevron-right text-secondary"></i></div>
+<div class="menu-row" onclick="if(confirm('Xoá tài khoản và toàn bộ lịch sử làm bài?')){localStorage.removeItem('azt2');S={user:null,att:SEED,cls:'all',added:[]};view='home';render()}"><span class="ico" style="background:#fee2e2;color:#ef4444"><i class="bi bi-trash"></i></span><span class="flex-grow-1">Xoá tài khoản</span><i class="bi bi-chevron-right text-secondary"></i></div></div>
+<div class="px-3"><button class="btn w-100 py-3 fs-5 bg-transparent" style="border:1.5px solid #374151;border-radius:12px" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button></div>`}
+function notif(){return `${head('Thông báo')}<div class="text-center text-secondary" style="padding-top:35vh">Chưa có thông báo</div>`}
+
+function exam(){const e=ex(S.p),h=S.att.filter(a=>a.ex===e.id);
+ const row=(c,bg,i,l,v)=>`<div class="d-flex align-items-center gap-3 py-3 border-bottom"><span class="ico" style="background:${bg};color:${c}"><i class="bi bi-${i}"></i></span><span class="text-secondary flex-grow-1">${l}</span><span class="fw-medium">${v}</span></div>`;
+ const left=10-h.length;
+ return `${head('Đề thi')}<div class="p-3">
+<div class="card-x p-3 mb-4"><div class="d-flex justify-content-between align-items-center mb-1"><h5 class="fw-semibold mb-0">${e.name}</h5><button class="btn btn-sm border" onclick="toast('Đã sao chép liên kết')"><i class="bi bi-copy text-primary"></i></button></div>
+${row('#ef4444','#fee2e2','alarm','Thời gian làm bài:',e.min+' phút')}${row('#7c3aed','#ede9fe','calendar-check','Thời gian vào thi:',e.at.replace('Hạn nộp: ',''))}${row('#2563eb','#dbeafe','fonts','Loại đề:','Trắc nghiệm')}${row('#10b981','#d1fae5','info-circle','Số lượng câu hỏi:',e.n+' câu')}${row('#f59e0b','#fef3c7','heart','Số lượt làm đề còn lại:',left+'/10 lượt')}
+<button class="btn btn-yellow w-100 py-2 mt-3" onclick="start('${e.id}')"><i class="bi bi-pencil me-2"></i>Bắt đầu thi</button></div>
+<h5 class="fw-semibold mb-3">Xếp hạng</h5>
+<div class="rank d-flex align-items-center gap-3 p-3 mb-4"><span class="ico" style="width:48px;height:48px;border-radius:50%;background:#ffffff30"><i class="bi bi-trophy"></i></span><span class="fs-5 flex-grow-1">Thứ hạng: ${h.length?Math.max(1,60-Math.round(best(e.id)*6)):'-'}</span><a class="text-white" href="#" onclick="board('${e.id}');return false">Bảng xếp hạng ›</a></div>
+<h5 class="fw-semibold mb-3">Lịch sử làm bài</h5>
+${h.map((a,i)=>`<div class="card-x mb-3 overflow-hidden"><div class="d-flex justify-content-between p-3 border-bottom"><b class="text-secondary fw-medium">Điểm:</b><b class="fs-3" style="color:var(--red);line-height:1">${a.score}</b></div>
+<div class="p-3"><div class="d-flex align-items-center gap-3 mb-3"><span class="ico" style="background:#fee2e2;color:#ef4444"><i class="bi bi-alarm"></i></span><span class="text-secondary flex-grow-1">Thời gian làm bài:</span><b class="fw-medium">${dur(a.time)}</b></div>
+<div class="d-flex align-items-center gap-3"><span class="ico" style="background:#d1fae5;color:#10b981"><i class="bi bi-check-circle"></i></span><span class="text-secondary flex-grow-1">Số câu đúng:</span><b class="fw-medium">${a.ok}/${a.total} câu</b></div><div class="text-end fst-italic text-secondary small mt-2">${a.date}</div></div>
+<div class="text-center py-3 text-primary" style="background:#f7f7fa;cursor:pointer" onclick="go('detail',${S.att.indexOf(a)})"><i class="bi bi-eye me-2"></i>Xem chi tiết bài làm</div></div>`).join('')||'<div class="text-secondary text-center py-3">Bạn chưa làm đề này.</div>'}</div>`}
+function board(id){const n=['Nguyễn Minh Anh','Trần Gia Bảo','Lê Thu Hà','Phạm Quốc Huy'],sc=[9.5,9,8.5,8];
+ modal('Bảng xếp hạng',n.map((x,i)=>`<div class="d-flex justify-content-between py-2 border-bottom"><span>${i+1}. ${x}</span><b>${sc[i]}</b></div>`).join('')+`<div class="d-flex justify-content-between py-2 mt-2 rounded px-2" style="background:#eaf1ff"><span>Bạn</span><b>${S.att.some(a=>a.ex===id)?best(id):'-'}</b></div>`)}
+
+// ---------- Taking a test ----------
+function start(id){const e=ex(id);if(!S.added.includes(id)){S.added.push(id);save()}T={id,qs:bank(e.n),ans:{},i:0,t0:Date.now(),end:Date.now()+e.min*60000};view='take';render();
+ tick=setInterval(()=>{const r=Math.max(0,Math.round((T.end-Date.now())/1000));const c=$('#clock');if(c){c.textContent=String(Math.floor(r/60)).padStart(2,'0')+':'+String(r%60).padStart(2,'0');c.classList.toggle('text-danger',r<60)}if(r<=0){toast('Hết giờ, hệ thống tự nộp bài');submit(true)}},500)}
+function leave(){if(confirm('Thoát và huỷ bài làm đang thực hiện?')){clearInterval(tick);go('exam',T.id)}}
+function take(){const q=T.qs[T.i],L='ABCD',e=ex(T.id);
+ return `<div class="topbar d-flex align-items-center px-3 py-3"><button class="btn p-0 border-0" onclick="leave()"><i class="bi bi-x-lg fs-4"></i></button><div class="flex-grow-1 text-center fw-medium">${e.name}</div><b id="clock" class="fs-5">--:--</b></div>
+<div class="p-3"><div class="d-flex flex-wrap gap-2 mb-3">${T.qs.map((_,i)=>`<button class="nav-q ${T.ans[i]!==undefined?'done':''} ${i===T.i?'cur':''}" onclick="T.i=${i};render()">${i+1}</button>`).join('')}</div>
+<div class="card-x p-3 mb-3"><div class="text-secondary small mb-1">Câu ${T.i+1}/${T.qs.length}</div><div class="fs-5 fw-medium">${q[0]}</div></div>
+${q[1].map((o,k)=>`<div class="opt mb-2 ${T.ans[T.i]===k?'sel':''}" onclick="T.ans[T.i]=${k};render()"><b class="text-primary">${L[k]}.</b>${o}</div>`).join('')}
+<div class="d-flex gap-2 mt-4"><button class="btn btn-outline-secondary flex-fill" ${T.i?'':'disabled'} onclick="T.i--;render()">Câu trước</button>${T.i<T.qs.length-1?`<button class="btn btn-primary flex-fill" onclick="T.i++;render()">Câu sau</button>`:`<button class="btn btn-yellow flex-fill" onclick="submit()">Nộp bài</button>`}</div>
+<button class="btn btn-link w-100 mt-2" onclick="submit()">Nộp bài sớm</button></div>`}
+function submit(auto){const n=Object.keys(T.ans).length;
+ if(!auto&&n<T.qs.length&&!confirm(`Bạn mới trả lời ${n}/${T.qs.length} câu. Nộp bài ngay?`))return;
+ clearInterval(tick);const ok=T.qs.filter((q,i)=>T.ans[i]===q[2]).length,total=T.qs.length;
+ const a={ex:T.id,score:Math.round(ok/total*100)/10,time:Math.round((Date.now()-T.t0)/1000),ok,total,date:now(),ans:T.qs.map((_,i)=>T.ans[i]===undefined?-1:T.ans[i])};
+ S.att.unshift(a);save();T.res=a;view='result';render()}
+function result(){const a=T.res;return `<div class="text-center p-4" style="padding-top:15vh!important"><div class="text-secondary">Điểm của bạn</div><div style="font-size:5rem;font-weight:600;color:${a.score>=5?'#16a34a':'var(--red)'};line-height:1.1">${a.score}</div><p class="text-secondary">Đúng ${a.ok}/${a.total} câu • ${dur(a.time)}</p>
+<button class="btn btn-primary w-100 py-2 mb-2" onclick="go('detail',0)">Xem chi tiết bài làm</button><button class="btn btn-outline-dark w-100 py-2" onclick="go('home')">Về trang chủ</button></div>`}
+function detail(){const a=S.att[S.p];if(!a)return home();
+ if(!a.ans)return `${head('Chi tiết bài làm','exam').replace("go('exam')",`go('exam','${a.ex}')`)}<div class="text-center text-secondary p-5">Chi tiết câu trả lời của lượt làm này không còn lưu.</div>`;
+ const qs=bank(a.total),L='ABCD';
+ return `${head('Chi tiết bài làm').replace("go('home')",`go('exam','${a.ex}')`)}<div class="p-3"><div class="card-x p-3 mb-3 d-flex justify-content-between"><span>Điểm: <b style="color:var(--red)">${a.score}</b></span><span>Đúng ${a.ok}/${a.total}</span></div>
+${qs.map((q,i)=>`<div class="card-x p-3 mb-3"><div class="fw-medium mb-2">Câu ${i+1}. ${q[0]}</div>${q[1].map((o,k)=>`<div class="opt mb-1 ${k===q[2]?'ok':a.ans[i]===k?'bad':''}"><b>${L[k]}.</b>${o}${k===q[2]?'<i class="bi bi-check-lg ms-auto text-success"></i>':a.ans[i]===k?'<i class="bi bi-x-lg ms-auto text-danger"></i>':''}</div>`).join('')}${a.ans[i]<0?'<div class="small text-danger mt-1">Bạn chưa trả lời câu này</div>':''}</div>`).join('')}</div>`}
+
+render();
+</script>
+</body>
+</html>
