@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng ký - Thi trắc nghiệm</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="login-page">
+    <header
+      class="d-flex align-items-center gap-2 p-3 text-primary fs-4 fw-bold"
+    >
+      <i class="bi bi-check2-square" aria-hidden="true"></i>
+      <span>Thi trắc nghiệm</span>
+    </header>
+
+    <main class="container px-3 pt-4 pb-5">
+      <div class="login-card card card-body shadow-sm border-0 mx-auto p-4">
+        <h1 class="fs-3 fw-bold text-center mb-4">Đăng ký</h1>
+
+        <!-- ========== BƯỚC 1: chọn vai trò ========== -->
+        <section id="buoc1">
+          <div class="row g-3">
+            <div class="col-6">
+              <button type="button" class="role-card" data-vaitro="sinhvien">
+                <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                Tôi là sinh viên
+              </button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="role-card" data-vaitro="giangvien">
+                <i class="bi bi-person-workspace" aria-hidden="true"></i>
+                Tôi là giảng viên
+              </button>
+            </div>
+          </div>
+          <p class="mt-4 mb-0">
+            Bạn đã có tài khoản?
+            <a href="DangNhap.html" class="text-primary text-decoration-none"
+              >Đăng nhập</a
+            >
+          </p>
+        </section>
+
+        <!-- ========== BƯỚC 2: nhập thông tin ========== -->
+        <section id="buoc2" class="d-none">
+          <div
+            class="nav nav-underline nav-fill border-bottom mb-4"
+            role="tablist"
+          >
+            <button
+              type="button"
+              class="nav-link text-body"
+              role="tab"
+              data-vaitro="sinhvien"
+            >
+              <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>Sinh viên
+            </button>
+            <button
+              type="button"
+              class="nav-link text-body"
+              role="tab"
+              data-vaitro="giangvien"
+            >
+              <i class="bi bi-person me-1" aria-hidden="true"></i>Giảng viên
+            </button>
+          </div>
+
+          <form id="form-dangky">
+            <input type="hidden" name="vai_tro" id="vai_tro" value="" />
+
+            <div class="mb-3">
+              <label for="ho_ten" class="visually-hidden">Họ tên</label>
+              <input
+                type="text"
+                class="form-control py-2"
+                id="ho_ten"
+                name="ho_ten"
+                placeholder="Họ tên"
+                autocomplete="name"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="visually-hidden">Email</label>
+              <input
+                type="email"
+                class="form-control py-2"
+                id="email"
+                name="email"
+                placeholder="Nhập email"
+                autocomplete="username"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="mat_khau" class="visually-hidden">Mật khẩu</label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  class="form-control py-2 border-end-0"
+                  id="mat_khau"
+                  name="mat_khau"
+                  placeholder="Mật khẩu"
+                  autocomplete="new-password"
+                  minlength="6"
+                  required
+                />
+                <button
+                  type="button"
+                  class="btn bg-white border border-start-0 text-secondary"
+                  id="btn-mat"
+                  aria-label="Hiện mật khẩu"
+                >
+                  <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">
+              Đăng ký
+            </button>
+          </form>
+
+          <p class="mt-4 mb-0">
+            Bạn đã có tài khoản?
+            <a href="DangNhap.html" class="text-primary text-decoration-none"
+              >Đăng nhập</a
+            >
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const buoc1 = document.getElementById("buoc1");
+      const buoc2 = document.getElementById("buoc2");
+      const oVaiTro = document.getElementById("vai_tro");
+      const tabs = document.querySelectorAll(".nav-link[data-vaitro]");
+
+      // Chọn vai trò (từ thẻ ở bước 1 hoặc từ tab ở bước 2)
+      function chonVaiTro(vaiTro) {
+        oVaiTro.value = vaiTro;
+        tabs.forEach((t) => {
+          const dangChon = t.dataset.vaitro === vaiTro;
+          t.classList.toggle("active", dangChon);
+          t.setAttribute("aria-selected", dangChon);
+        });
+        buoc1.classList.add("d-none");
+        buoc2.classList.remove("d-none");
+        document.getElementById("ho_ten").focus();
+      }
+      document.querySelectorAll("[data-vaitro]").forEach((el) => {
+        el.addEventListener("click", () => chonVaiTro(el.dataset.vaitro));
+      });
+
+      // Hiện / ẩn mật khẩu
+      const oMatKhau = document.getElementById("mat_khau");
+      const nutMat = document.getElementById("btn-mat");
+      nutMat.addEventListener("click", () => {
+        const dangAn = oMatKhau.type === "password";
+        oMatKhau.type = dangAn ? "text" : "password";
+        nutMat.innerHTML =
+          '<i class="bi ' +
+          (dangAn ? "bi-eye" : "bi-eye-slash") +
+          '" aria-hidden="true"></i>';
+        nutMat.setAttribute(
+          "aria-label",
+          dangAn ? "Ẩn mật khẩu" : "Hiện mật khẩu",
+        );
+      });
+
+      // Tạm thời: đăng ký xong chuyển về trang đăng nhập.
+      // Khi làm PHP: bỏ đoạn này, đổi thành <form action="register.php" method="post">
+      document.getElementById("form-dangky").addEventListener("submit", (e) => {
+        e.preventDefault();
+        window.location.href = "DangNhap.html";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,260 @@
+/* ===== Màu chủ đạo: ghi đè biến của Bootstrap ===== */
+:root {
+  --blue: #1e3fa8;
+  --navy: #0f1c3f;
+  --soft: #f1f4f9;
+  --line: #e6eaf2;
+  --bs-primary: #1e3fa8;
+  --bs-primary-rgb: 30, 63, 168;
+  --bs-body-color: #1e2a47;
+  --bs-body-font-family: "Segoe UI", Tahoma, sans-serif;
+}
+body {
+  background: var(--blue);
+}
+.bg-soft {
+  background-color: var(--soft) !important;
+}
+
+.btn {
+  --bs-btn-font-weight: 600;
+  --bs-btn-border-radius: 8px;
+}
+.btn-primary {
+  --bs-btn-bg: #1e3fa8;
+  --bs-btn-border-color: #1e3fa8;
+  --bs-btn-hover-bg: #17317f;
+  --bs-btn-hover-border-color: #17317f;
+  --bs-btn-active-bg: #142b6e;
+  --bs-btn-active-border-color: #142b6e;
+}
+.btn-outline-primary {
+  --bs-btn-color: #1e3fa8;
+  --bs-btn-border-color: #1e3fa8;
+  --bs-btn-hover-bg: #1e3fa8;
+  --bs-btn-hover-border-color: #1e3fa8;
+  --bs-btn-active-bg: #1e3fa8;
+  --bs-btn-active-border-color: #1e3fa8;
+}
+.card {
+  --bs-card-border-radius: 12px;
+  --bs-card-border-color: var(--line);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 0.2rem rgba(30, 63, 168, 0.15);
+}
+.table thead th {
+  font-size: 13px;
+  color: #6b7794;
+  font-weight: 600;
+}
+
+/* ===== Khung trang: nền xanh bao quanh, vùng nội dung trắng bo góc ===== */
+.sidebar {
+  width: 93px;
+  flex-shrink: 0;
+  color: #fff;
+  padding-top: 16px;
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 26px;
+}
+.logo i {
+  font-size: 40px;
+  line-height: 1;
+}
+.sidebar nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  margin: 0 0 6px 8px;
+  border-radius: 28px 0 0 28px;
+  color: #fff;
+  text-decoration: none;
+}
+.sidebar nav a i {
+  font-size: 22px;
+}
+.sidebar nav a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.sidebar nav a.active {
+  background: #fff;
+  color: var(--blue);
+}
+
+/* Hai góc cong nối tab đang chọn vào vùng nội dung */
+.sidebar nav a.active::before,
+.sidebar nav a.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+}
+.sidebar nav a.active::before {
+  top: -20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 10px 0 0 #fff;
+}
+.sidebar nav a.active::after {
+  bottom: -20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -10px 0 0 #fff;
+}
+
+/* Chú thích khi rê chuột vào biểu tượng menu */
+.tip {
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--navy);
+  color: #fff;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.sidebar nav a:hover .tip,
+.sidebar nav a:focus-visible .tip {
+  opacity: 1;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border-radius: 28px;
+  margin: 8px 8px 8px 0;
+  overflow: hidden;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+}
+.content {
+  max-width: 1500px;
+}
+
+/* ===== Thành phần riêng của giao diện ===== */
+.search {
+  max-width: 300px;
+}
+.welcome {
+  background: linear-gradient(
+    100deg,
+    var(--navy) 0%,
+    #1c2f78 60%,
+    #2a46a8 100%
+  );
+}
+.welcome::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -40px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+.welcome p {
+  max-width: 620px;
+}
+.quick-card {
+  background: var(--soft);
+  min-height: 150px;
+}
+.quick-card:hover {
+  background: #e6ebf6;
+}
+.tile {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  font-size: 26px;
+}
+
+/* ===== Điện thoại: menu thành hàng biểu tượng nằm ngang ===== */
+@media (max-width: 767.98px) {
+  .sidebar {
+    width: 100%;
+    padding: 8px 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .logo {
+    padding: 0 8px;
+  }
+  .sidebar nav {
+    overflow-x: auto;
+    gap: 4px;
+  }
+  .sidebar nav a {
+    width: 52px;
+    height: 46px;
+    margin: 0;
+    border-radius: 10px;
+  }
+  .sidebar nav a.active::before,
+  .sidebar nav a.active::after {
+    display: none;
+  }
+  .tip {
+    display: none;
+  }
+  .main {
+    margin: 8px;
+    border-radius: 20px;
+  }
+}
+
+/* ===== Trang đăng nhập ===== */
+body.login-page {
+  background: var(--soft);
+}
+.login-card {
+  max-width: 500px;
+}
+
+/* ===== Trang đăng ký: thẻ chọn vai trò ===== */
+.role-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 28px 12px 18px;
+  color: #1e2a47;
+  font-weight: 600;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.role-card i {
+  font-size: 72px;
+  line-height: 1;
+}
+.role-card:hover,
+.role-card:focus-visible {
+  border-color: var(--blue);
+  color: var(--blue);
+}
